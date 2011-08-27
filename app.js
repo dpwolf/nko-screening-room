@@ -55,7 +55,7 @@ app.get('/', function (req, res) {
 });
 
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
+  socket.emit('room_name', { current_video: 'http://vimeo.com/10866394' });
   socket.on('my other event', function (data) {
     console.log(data);
   });
