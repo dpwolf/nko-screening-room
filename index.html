@@ -10,8 +10,47 @@
 
     var username_is_set = false,
         nickname = false;
+        
+    function addEvent(element, eventName, callback) {
+        if (element.addEventListener) {
+            element.addEventListener(eventName, callback, false);
+        }
+        else {
+            element.attachEvent(eventName, callback, false);
+        }
+    }
+    
+    function end_video(){
+        alert('end video');
+    }
+
+    function setup_event_listners(){
+        var froogaloop = $f(document.querySelectorAll('iframe')[0]);
+        froogaloop.addEvent('finish',end_video);
+    }
+
+    function ready() {
+        setup_event_listners();
+    }
+    
     function embedVideo(video) {
         document.getElementById('embed').innerHTML = unescape(video.html);
+        
+        /**
+         * Utility function for adding an event. Handles the inconsistencies
+         * between the W3C method for adding events (addEventListener) and
+         * IE's (attachEvent).
+         */
+        
+        // Listen for the ready event for any vimeo video players on the page
+        var vimeoPlayers = document.querySelectorAll('iframe'),
+            player;
+
+        for (var i = 0, length = vimeoPlayers.length; i < length; i++) {
+            player = vimeoPlayers[i];
+            console.warn(player);
+            $f(player).addEvent('ready', ready);
+        }
     }
 
     function set_nickname(){
