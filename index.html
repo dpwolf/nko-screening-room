@@ -222,11 +222,8 @@
 </head>
 <body>
   <div class="wrapper">
+    <div id="logo"></div>
 
-  <h1>Video Projection</h1>
-  <h2>Currently in room: <span id="current-room"></span></h2>
-  <a id="leave_room" onclick="leave_room();" style="display:none;">Leave</a>
-    <h3 id="from"></h3>
     <div id="embed"></div>
     <div>
         <form id="set-nickname" action="javascript: set_nickname()" style="display:inherit">
@@ -240,20 +237,29 @@
         </form>
 
         <form id="add-video" action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)" style="display:none">
-            <input class="enter" type="text" name="new_video" value="" placeholder="Paste Your Video URL Here" id="new_video_url" >
+            <input class="enter" type="text" name="new_video" value="" placeholder="Vimeo Video URL Here" id="new_video_url" >
             <input class="submit" type="submit" value="Add video &rarr;">
         </form>
     </div>
 
+    <div id="couch"></div>
+
+
+
   </div><!--wrapper-->
 
   <div id="right_column">
+        <h3>Currently in room:<span id="current-room"></span>
+          <br />
+          <br />
+      <a id="leave_room" onclick="leave_room();">Leave Room</a></h3>
     <h3>Available Rooms:</h3>
     <ul id="rooms">
     </ul>
     <h3>Room Members:</h3>
     <ul id="users-in-room">
     </ul>
+     <h3 id="from"></h3>
   </div>
 </body>
 </html>
