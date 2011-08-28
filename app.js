@@ -163,7 +163,7 @@ io.sockets.on('connection', function (socket) {
     })
     
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
-    socket.on('add video', function (data) {
+    socket.on('add video', function (url) {
         socket.get('nickname',function(err, nickname){
             if(err){
                 console.log(err);
@@ -172,7 +172,8 @@ io.sockets.on('connection', function (socket) {
                     if(err){
                         console.log(err);
                     }else{
-                        socket.broadcast.to(room).emit('add video',{url:data.url,from:nickname});
+                        socket.emit('add video',{url:url,from:nickname});
+                        socket.broadcast.to(room).emit('add video',{url:url,from:nickname});
                     }
                 })
             }

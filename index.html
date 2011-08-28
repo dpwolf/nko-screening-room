@@ -37,8 +37,7 @@
     }
 
     function add_video(url){
-        console.warn('emit','room_name', {current_video: url});
-        socket.emit('room_name', {current_video: url,nickname: username});
+        socket.emit('add video', url);
     }
 
 
@@ -82,12 +81,12 @@
           // alert('room joined');
       });
 
-      socket.on('room_name', function (data) {
-        console.log(data);
+      socket.on('add video', function (video) {
+        console.log('add video',video);
         // alert(data.current_video)
 
         // This is the URL of the video you want to load
-        var videoUrl = data.current_video;
+        var videoUrl = video.url;
 
         // This is the oEmbed endpoint for Vimeo (we're using JSON)
         // (Vimeo also supports oEmbed discovery. See the PHP example.)
@@ -102,7 +101,7 @@
 
         // This function loads the data from Vimeo
 
-        document.getElementById('from').innerHTML = 'This video is brought to you by ' + data.nickname;
+        document.getElementById('from').innerHTML = 'This video is brought to you by ' + video.from;
 
         if(embed = document.getElementById('vimeo_embed')){
             document.getElementsByTagName('head').item(0).removeChild(embed);
@@ -133,7 +132,7 @@
             <input type="submit" value="Join room">
         </form>
 
-        <form action="javascript: next_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
+        <form action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
             <input type="text" name="new_video" value="" placeholder="paste your url here" id="new_video_url" >
             <input type="submit" value="Add video &rarr;">
         </form>
