@@ -79,24 +79,25 @@
         socket.emit('add video', url);
     }
 
-    function check_for_duplicate_videos(){
-        if(video_queue.length){
-            var is_duplicate = false;
-            for(i in old_video_queue){
-                if(video_queue[0].url = old_video_queue[i].url){
-                    is_duplicate = true;
-                }
-            }
-            if(is_duplicate){
-                video_queue.shift();
-                check_for_duplicate_videos();
-            }else{
-                return video_queue.shift();
-            }
-        }else{
-            return false;
-        }
-    }
+    // function check_for_duplicate_videos(video){
+    //     if(video_queue.length){
+    //         var is_duplicate = false;
+    //         for(i in old_video_queue){
+    //             if(video.url = old_video_queue[i].url){
+    //                 is_duplicate = true;
+    //             }
+    //         }
+    //         if(is_duplicate){
+    //             return false
+    //             video_queue.shift();
+    //             check_for_duplicate_videos();
+    //         }else{
+    //             return video_queue.shift();
+    //         }
+    //     }else{
+    //         return false;
+    //     }
+    // }
 
     function play_next_video(){
         if(current_video){
@@ -104,7 +105,7 @@
             current_video = null;
         }
         if(video_queue){
-            var video = check_for_duplicate_videos();
+            var video = video_queue.shift();
 
             if(video){
                 current_video = video;
