@@ -10,7 +10,9 @@
 
     var username_is_set = false,
         nickname = false,
-        video_queue = [];
+        video_queue = [],
+        old_video_queue = [],
+        current_video = null;
         
     function addEvent(element, eventName, callback) {
         if (element.addEventListener) {
@@ -76,42 +78,77 @@
     function add_video(url){
         socket.emit('add video', url);
     }
-    
-    function play_next_video(){
-        if(video_queue){
-            var video = video_queue.shift();
-            console.log('play_video',video);
-            // alert(data.current_video)
 
-            // This is the URL of the video you want to load
-            var videoUrl = video.url;
-
-            // This is the oEmbed endpoint for Vimeo (we're using JSON)
-            // (Vimeo also supports oEmbed discovery. See the PHP example.)
-            var endpoint = 'http://www.vimeo.com/api/oembed.json';
-
-            // Tell Vimeo what function to call
-            var callback = 'embedVideo';
-
-            // Put together the URL
-            var url = endpoint + '?url=' + encodeURIComponent(videoUrl) + '&callback=' + callback + '&width=640&autoplay=true&api=true';
-
-
-            // This function loads the data from Vimeo
-
-            document.getElementById('from').innerHTML = 'This video is brought to you by ' + video.from;
-
-            if(embed = document.getElementById('vimeo_embed')){
-                document.getElementsByTagName('head').item(0).removeChild(embed);
+    function check_for_duplicate_videos(){
+        if(video_queue.length){
+            var is_duplicate = false;
+            for(i in old_video_queue){
+                if(video_queue[0].url = old_video_queue[i].url){
+                    is_duplicate = true;
+                }
             }
-            var js = document.createElement('script');
-            js.setAttribute('type', 'text/javascript');
-            js.setAttribute('src', url);
-            js.setAttribute('id','vimeo_embed');
-            document.getElementsByTagName('head').item(0).appendChild(js);
+            if(is_duplicate){
+                video_queue.shift();
+                check_for_duplicate_videos();
+            }else{
+                return video_queue.shift();
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function play_next_video(){
+        if(current_video){
+            old_video_queue.push(current_video);
+            current_video = null;
+        }
+        if(video_queue){
+            var video = check_for_duplicate_videos();
+
+            if(video){
+                current_video = video;
+
+                console.log('play_video',video);
+                // alert(data.current_video)
+
+                // This is the URL of the video you want to load
+                var videoUrl = video.url;
+
+                // This is the oEmbed endpoint for Vimeo (we're using JSON)
+                // (Vimeo also supports oEmbed discovery. See the PHP example.)
+                var endpoint = 'http://www.vimeo.com/api/oembed.json';
+
+                // Tell Vimeo what function to call
+                var callback = 'embedVideo';
+
+                // Put together the URL
+                var url = endpoint + '?url=' + encodeURIComponent(videoUrl) + '&callback=' + callback + '&width=640&autoplay=true&api=true';
+
+
+                // This function loads the data from Vimeo
+
+                document.getElementById('from').innerHTML = 'This video is brought to you by ' + video.from;
+
+                if(embed = document.getElementById('vimeo_embed')){
+                    document.getElementsByTagName('head').item(0).removeChild(embed);
+                }
+                var js = document.createElement('script');
+                js.setAttribute('type', 'text/javascript');
+                js.setAttribute('src', url);
+                js.setAttribute('id','vimeo_embed');
+                document.getElementsByTagName('head').item(0).appendChild(js);
+            }else{
+                alert('No more videos! Add one!');
+            }
         }else{
             alert('No more videos! Add one!');
         }
+    }
+
+
+    function show_upcoming_video(){
+        
     }
 
       socket = io.connect('/');
