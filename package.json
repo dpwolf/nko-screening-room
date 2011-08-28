@@ -5,5 +5,7 @@
   , "dependencies": {
       "express": "2.4.6"
     , "jade": ">= 0.0.1"
+    , "socket.io": "0.7.10"
+    , "request": "2.1.1"
   }
 }
