@@ -1,14 +1,14 @@
-// 
+//
 // /**
 //  * Module dependencies.
 //  */
-// 
+//
 // var express = require('express');
-// 
+//
 // var app = module.exports = express.createServer();
-// 
+//
 // // Configuration
-// 
+//
 // app.configure(function(){
 //   app.set('views', __dirname + '/views');
 //   app.set('view engine', 'jade');
@@ -17,26 +17,26 @@
 //   app.use(app.router);
 //   app.use(express.static(__dirname + '/public'));
 // });
-// 
+//
 // app.configure('development', function(){
-//   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+//   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 // });
-// 
+//
 // app.configure('production', function(){
-//   app.use(express.errorHandler()); 
+//   app.use(express.errorHandler());
 // });
-// 
+//
 // // Routes
-// 
+//
 // app.get('/', function(req, res){
 //   res.render('index', {
 //     title: 'Express'
 //   });
 // });
-// 
+//
 // app.listen(process.env.NODE_ENV === 'production' ? 80 : 8000, function() {
 //   console.log('Ready');
-// 
+//
 //   // if run as root, downgrade to the owner of this file
 //   if (process.getuid() === 0)
 //     require('fs').stat(__filename, function(err, stats) {
@@ -95,7 +95,7 @@ io.sockets.on('connection', function (socket) {
                 socket.join(room);
                 socket.set('room', room);
                 console.log('***********room:',room);
-                
+
                 if(rooms){
                     if(rooms[room]){
                         var user_already_in_room = false;
@@ -112,7 +112,7 @@ io.sockets.on('connection', function (socket) {
                     }
                 }
 
-                socket.emit('room joined');
+                socket.emit('room joined', room);
                 var room_list = [];
                 for(rm in rooms){
                     if(rm){
@@ -123,12 +123,11 @@ io.sockets.on('connection', function (socket) {
                 socket.emit('list rooms',room_list);
                 socket.emit('list room members',rooms[room]);
                 socket.broadcast.emit('list rooms',room_list);
-                socket.emit('new room member', nickname);
                 socket.broadcast.to(room).emit('new room member', nickname);
             }
         })
     })
-    
+
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
     socket.on('add video', function (data) {
         socket.get('nickname',function(err, nickname){

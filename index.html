@@ -46,26 +46,28 @@
               $('#rooms').append('<li>' + room + '</li>');
           });
       });
-      
+
       socket.on('list room members',function(members){
           $('#users-in-room').empty();
           $(members).each(function(i,member){
               $('#users-in-room').append('<li>' + member + '</li>');
           });
       })
-      
+
       socket.on('new room member',function(member){
-          $('#users-in-room').prepend('<li>' + member + '</li>');
+        if !member = current_user
+        $('#users-in-room').prepend('<li>' + member + '</li>');
       });
 
       socket.on('nickname set',function(){
           // alert('nickname set');
       });
 
-      socket.on('room joined',function(){
+      socket.on('room joined',function(room){
+         $('#current_room').text(room);
           // alert('room joined');
       });
-      
+
       socket.on('room_name', function (data) {
         console.log(data);
         // alert(data.current_video)
@@ -101,8 +103,9 @@
 </head>
 <body>
 
-    <h1>Video Projection</h1>
-    <h2 id="from"></h2>
+  <h1>Video Projection</h1>
+  <h2>Currently in room: <span id="current_room"></span></h2>
+    <h3 id="from"></h3>
     <div id="embed">Loading video...</div>
     <div>
         <form action="javascript: set_nickname()">
