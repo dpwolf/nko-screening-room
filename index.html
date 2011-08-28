@@ -31,6 +31,9 @@
             alert('need a room mothafucka!');
         }
     }
+    function leave_room(){
+        socket.emit('leave room');
+    }
 
     function add_video(url){
         console.warn('emit','room_name', {current_video: url});
@@ -60,12 +63,20 @@
           }
       });
 
+      socket.on('member left room',function(member){
+          if(member == nickname){
+              $('#users-in-room').empty();
+              $('#current-room').empty();
+          }
+          console.log('member left room',member);
+      });
+
       socket.on('nickname set',function(){
           // alert('nickname set');
       });
 
       socket.on('room joined',function(room){
-         $('#current_room').text(room);
+         $('#current-room').text(room);
           // alert('room joined');
       });
 
@@ -105,7 +116,8 @@
 <body>
 
   <h1>Video Projection</h1>
-  <h2>Currently in room: <span id="current_room"></span></h2>
+  <h2>Currently in room: <span id="current-room"></span></h2>
+  <a onclick="leave_room();">Leave</a>
     <h3 id="from"></h3>
     <div id="embed">Loading video...</div>
     <div>

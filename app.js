@@ -90,7 +90,7 @@ io.sockets.on('connection', function (socket) {
                 console.log('***********name:',nickname);
 
                 // var rooms = io.sockets.manager.rooms;
-                console.log('*********io',io.sockets.manager)
+                // console.log('*********io',io.sockets.manager)
 
                 socket.join(room);
                 socket.set('room', room);
@@ -128,6 +128,33 @@ io.sockets.on('connection', function (socket) {
         })
     })
 
+    socket.on('leave room', function(){
+        socket.get('room',function(err,room){
+            if(err){
+                console.log(err);
+            }else{
+                socket.leave(room);
+                console.log('*********leave room: ',room);
+                socket.get('nickname',function(err, nickname){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        for(var i in rooms[room]){
+                            if(rooms[room][i]==nickname){
+                                rooms[room].splice(i,1);
+                                break;
+                            }
+                        }
+                        socket.broadcast.to(room).emit('member left room',nickname);
+                        socket.emit('member left room',nickname);
+                    }
+                });
+
+                socket.broadcast.to(room).emit('list room members',rooms[room]);
+            }
+        })
+    })
+    
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
     socket.on('add video', function (data) {
         socket.get('nickname',function(err, nickname){
