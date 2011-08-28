@@ -206,6 +206,7 @@
 
       socket.on('room joined',function(room){
          $('#add-room').hide();
+         $('#add-video').show();
          $('#current-room').text(room);
           // alert('room joined');
       });
@@ -234,7 +235,7 @@
             <input class="submit" type="submit" value="Join room">
         </form>
 
-        <form action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)" style="display:none">
+        <form id="add-video" action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)" style="display:none">
             <input class="enter" type="text" name="new_video" value="" placeholder="Paste Your Video URL Here" id="new_video_url" >
             <input class="submit" type="submit" value="Add video &rarr;">
         </form>
