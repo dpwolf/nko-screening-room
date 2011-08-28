@@ -21,7 +21,7 @@
             alert('need a name mothafucka!');
         }
     }
-    
+
     function join_room(){
         var room = document.getElementById('room').value;
         if(room){
@@ -41,6 +41,7 @@
       socket = io.connect('/');
       socket.on('list rooms',function(rooms){
           console.log('rooms',rooms)
+          $('#rooms').empty();
           $(rooms).each(function(i,room){
               $('#rooms').append('<li>' + room + '</li>');
           });
@@ -64,7 +65,6 @@
       socket.on('room joined',function(){
           // alert('room joined');
       });
-
       
       socket.on('room_name', function (data) {
         console.log(data);
