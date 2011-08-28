@@ -123,13 +123,20 @@ io.sockets.on('connection', function (socket) {
                 socket.set('room', room);
                 console.log('***********room:',room);
 
+                socket.get('room', function(err,room){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        leave_room(socket);
+                    }
+                })
+
                 if(rooms){
                     if(rooms[room]){
                         var user_already_in_room = false;
                         for(j=0;j<rooms[room].length;j++){
                             if(rooms[room][j] == nickname){
                                 user_already_in_room = true;
-                                leave_room(socket);
                             }
                         }
                         if(!user_already_in_room){
