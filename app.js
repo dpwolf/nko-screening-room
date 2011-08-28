@@ -74,31 +74,36 @@ function leave_room(socket){
                 if(err){
                     console.log(err);
                 }else{
-                    for(var i in rooms[room]){
-                        if(rooms[room][i]==nickname){
-                            rooms[room].splice(i,1);
-                            break;
+                    for(var i in rooms[room].members){
+                        if(rooms[room].members[i]==nickname){
+                            rooms[room].members.splice(i,1);
                         }
                     }
                     socket.broadcast.to(room).emit('member left room',nickname);
                     socket.emit('member left room',nickname);
                 }
             });
-
-            socket.broadcast.to(room).emit('list room members',rooms[room]);
+            socket.broadcast.to(room).emit('list room members',rooms[room].members);
+            list_rooms(socket);
         }
     })
 }
 
-io.sockets.on('connection', function (socket) {
+function list_rooms(socket){
     var room_list = [];
-    for(room in rooms){
-        if(room){
-            room_list.push(room);
+    for(rm in rooms){
+        if(rm && rooms[rm].members.length){
+            room_list.push({name:rm, count:rooms[rm].members.length});
+        }else{
+            delete rooms[rm];
         }
     }
     socket.emit('list rooms',room_list);
-    console.log(room_list);
+    socket.broadcast.emit('list rooms',room_list);
+}
+
+io.sockets.on('connection', function (socket) {
+    list_rooms(socket);
 
     socket.on('set nickname', function (name) {
         socket.set('nickname', name, function () {
@@ -135,23 +140,15 @@ io.sockets.on('connection', function (socket) {
 
                 if(rooms){
                     if(rooms[room]){
-                        rooms[room].push(nickname);
+                        rooms[room].members.push(nickname);
                     }else{
-                        rooms[room] = [nickname];
+                        rooms[room] = {members:[nickname],videos:[]};
                     }
                 }
 
                 socket.emit('room joined', room);
-                var room_list = [];
-                for(rm in rooms){
-                    if(rm){
-                        room_list.push(rm);
-                    }
-                }
-
-                socket.emit('list rooms',room_list);
-                socket.emit('list room members',rooms[room]);
-                socket.broadcast.emit('list rooms',room_list);
+                list_rooms(socket);
+                socket.emit('list room members',rooms[room].members);
                 socket.broadcast.to(room).emit('new room member', nickname);
             }
         })

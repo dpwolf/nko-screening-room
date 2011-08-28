@@ -47,12 +47,13 @@
           console.log('rooms',rooms)
           $('#rooms').empty();
           $(rooms).each(function(i,room){
-              $('#rooms').append('<li>' + room + '</li>');
+              $('#rooms').append('<li>' + room.name + ' (<span>' + room.count + '</span>)</li>');
           });
       });
 
       socket.on('list room members',function(members){
           $('#users-in-room').empty();
+          console.log(members)
           $(members).each(function(i,member){
               $('#users-in-room').append('<li>' + member + '</li>');
           });
