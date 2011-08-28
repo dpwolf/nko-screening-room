@@ -121,7 +121,7 @@ io.sockets.on('connection', function (socket) {
                 }
 
                 socket.emit('list rooms',room_list);
-                socket.emit('list room members',rooms.room);
+                socket.emit('list room members',rooms[room]);
                 socket.broadcast.emit('list rooms',room_list);
                 socket.emit('new room member', nickname);
                 socket.broadcast.to(room).emit('new room member', nickname);
