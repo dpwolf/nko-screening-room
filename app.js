@@ -119,29 +119,23 @@ io.sockets.on('connection', function (socket) {
                 // var rooms = io.sockets.manager.rooms;
                 // console.log('*********io',io.sockets.manager)
 
+                socket.get('room', function(err,oldroom){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        if(oldroom){
+                            leave_room(socket);
+                        }
+                    }
+                })
+
                 socket.join(room);
                 socket.set('room', room);
                 console.log('***********room:',room);
 
-                socket.get('room', function(err,room){
-                    if(err){
-                        console.log(err);
-                    }else{
-                        leave_room(socket);
-                    }
-                })
-
                 if(rooms){
                     if(rooms[room]){
-                        var user_already_in_room = false;
-                        for(j=0;j<rooms[room].length;j++){
-                            if(rooms[room][j] == nickname){
-                                user_already_in_room = true;
-                            }
-                        }
-                        if(!user_already_in_room){
-                            rooms[room].push(nickname);
-                        }
+                        rooms[room].push(nickname);
                     }else{
                         rooms[room] = [nickname];
                     }

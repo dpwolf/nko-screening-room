@@ -6,8 +6,9 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery-1.6.2.min.js"></script>
     <script>
-    // This function puts the video on the page
-    var username_is_set = false;
+
+    var username_is_set = false,
+        nickname = false;
     function embedVideo(video) {
         document.getElementById('embed').innerHTML = unescape(video.html);
     }
