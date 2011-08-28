@@ -74,15 +74,19 @@ function leave_room(socket){
                 if(err){
                     console.log(err);
                 }else{
-                    for(var i in rooms[room].members){
-                        if(rooms[room].members[i]==nickname){
-                            rooms[room].members.splice(i,1);
+                    if(rooms[room]){
+                        for(var i in rooms[room].members){
+                            if(rooms[room].members[i]==nickname){
+                                rooms[room].members.splice(i,1);
+                            }
                         }
                     }
                     socket.broadcast.to(room).emit('member left room',nickname);
                     socket.emit('member left room',nickname);
                 }
-                socket.broadcast.to(room).emit('list room members',rooms[room].members);
+                if(rooms[room]){
+                    socket.broadcast.to(room).emit('list room members',rooms[room].members);
+                }
                 list_rooms(socket);
             });
         }
