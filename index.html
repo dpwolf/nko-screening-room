@@ -87,6 +87,7 @@
     }
     function leave_room(){
         socket.emit('leave room');
+        $('#leave_room').hide();
     }
 
     function add_video(url){
@@ -209,6 +210,7 @@
       socket.on('room joined',function(room){
          $('#add-room').hide();
          $('#add-video').show();
+         $('#leave_room').show();
          $('#current-room').text(room);
           // alert('room joined');
       });
@@ -223,7 +225,7 @@
 
   <h1>Video Projection</h1>
   <h2>Currently in room: <span id="current-room"></span></h2>
-  <a onclick="leave_room();">Leave</a>
+  <a id="leave_room" onclick="leave_room();" style="display:none;">Leave</a>
     <h3 id="from"></h3>
     <div id="embed"></div>
     <div>
