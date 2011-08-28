@@ -61,19 +61,69 @@ app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
+var rooms = [];
+
 io.sockets.on('connection', function (socket) {
+    socket.emit('list rooms',rooms)
+
     socket.on('set nickname', function (name) {
         socket.set('nickname', name, function () {
+            console.log('***********nickname set:', name)
             socket.emit('ready');
         });
     });
+
+    socket.on('join room', function(room){
+        console.log('****** joining room');
+        socket.get('nickname', function(err, nickname){
+            if(err){
+                console.log('****** nickname error');
+                console.log(err);
+            }else{
+                console.log('***********name:',nickname);
+
+                // var rooms = io.sockets.manager.rooms;
+                console.log('*********io',io.sockets.manager)
+
+                socket.join(room);
+                socket.set('room', room);
+                console.log('***********room:',room);
+                
+                var room_exists = false;
+                if(rooms.length){
+                    for(i=0;i<rooms.length;i++){
+                        if(rooms[i] == room){
+                            room_exists = true;
+                        }
+                    }
+                }
+                if(!room_exists){
+                    console.log('********* room not in list of existing rooms')
+                    rooms.push(room);
+                    socket.emit('list rooms',rooms)
+                }else{
+                    console.log('********* room is in list of existing rooms')
+                }
+                
+                
+                socket.broadcast.to(room).emit('new user', nickname);
+            }
+        })
+    })
+    
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
-    socket.on('room_name', function (data) {
+    socket.on('add video', function (data) {
         socket.get('nickname',function(err, nickname){
             if(err){
                 console.log(err);
             }else{
-                socket.broadcast.emit('room_name', { current_video: data.current_video, nickname:nickname });
+                socket.get('room', function(err,room){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        socket.broadcast.to(room).emit('add video',{url:data.url,from:nickname});
+                    }
+                })
             }
         })
     });

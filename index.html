@@ -11,24 +11,45 @@
     function embedVideo(video) {
         document.getElementById('embed').innerHTML = unescape(video.html);
     }
-    function next_video(url,username){
-        if(!username_is_set){
-            if(username){
-                socket.emit('set nickname',username)
-                username_is_set = true;
-                console.warn('emit','room_name', {current_video: url,nickname: username});
-                socket.emit('room_name', {current_video: url,nickname: username});
-            }else{
-                alert('Enter a username!');
-            }
+
+    function set_nickname(){
+        var name = document.getElementById('username').value;
+        if(name){
+            socket.emit('set nickname',name)
+            console.log('set nickname',name)
         }else{
-            console.warn('emit','room_name', {current_video: url,nickname: username});
-            socket.emit('room_name', {current_video: url,nickname: username});
+            alert('need a name mothafucka!');
         }
+    }
+    
+    function join_room(){
+        var room = document.getElementById('room').value;
+        if(room){
+            socket.emit('join room',room)
+            console.log('join room',room)
+        }else{
+            alert('need a room mothafucka!');
+        }
+    }
+
+    function add_video(url){
+        console.warn('emit','room_name', {current_video: url});
+        socket.emit('room_name', {current_video: url,nickname: username});
     }
 
 
       socket = io.connect('/');
+      socket.on('list rooms',function(rooms){
+          console.log('rooms',rooms)
+          $(rooms).each(function(i,room){
+              $('#rooms').append('<li>' + room + '</li>');
+          });
+      });
+      
+      socket.on('new user',function(data){
+          console.warn('new user',data);
+      });
+      
       socket.on('room_name', function (data) {
         console.log(data);
         // alert(data.current_video)
@@ -68,12 +89,22 @@
     <h2 id="from"></h2>
     <div id="embed">Loading video...</div>
     <div>
-        <form action="javascript: next_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
+        <form action="javascript: set_nickname()">
             <input type="text" name="username" value="" placeholder="username" id="username" >
+            <input type="submit" value="Set username">
+        </form>
+
+        <form action="javascript: join_room()">
+            <input type="text" name="username" value="" placeholder="room" id="room" >
+            <input type="submit" value="Join room">
+        </form>
+
+        <form action="javascript: next_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
             <input type="text" name="new_video" value="" placeholder="paste your url here" id="new_video_url" >
             <input type="submit" value="Add video &rarr;">
         </form>
     </div>
-
+    <ul id="rooms">
+    </ul>
 </body>
 </html>
