@@ -13,10 +13,10 @@
     }
 
     function set_nickname(){
-        var name = document.getElementById('username').value;
-        if(name){
-            socket.emit('set nickname',name)
-            console.log('set nickname',name)
+        nickname = document.getElementById('username').value;
+        if(nickname){
+            socket.emit('set nickname',nickname)
+            console.log('set nickname',nickname)
         }else{
             alert('need a name mothafucka!');
         }
@@ -55,8 +55,9 @@
       })
 
       socket.on('new room member',function(member){
-        if !member = current_user
-        $('#users-in-room').prepend('<li>' + member + '</li>');
+          if(member != nickname){
+              $('#users-in-room').prepend('<li>' + member + '</li>');
+          }
       });
 
       socket.on('nickname set',function(){
