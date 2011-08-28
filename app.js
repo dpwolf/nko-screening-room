@@ -63,7 +63,7 @@ app.get('/', function (req, res) {
 
 var rooms = {};
 
-function leave_room(){
+function leave_room(socket){
     socket.get('room',function(err,room){
         if(err){
             console.log(err);
@@ -129,7 +129,7 @@ io.sockets.on('connection', function (socket) {
                         for(j=0;j<rooms[room].length;j++){
                             if(rooms[room][j] == nickname){
                                 user_already_in_room = true;
-                                leave_room();
+                                leave_room(socket);
                             }
                         }
                         if(!user_already_in_room){
@@ -157,7 +157,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('leave room', function(){
-        leave_room();
+        leave_room(socket);
     })
     
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
