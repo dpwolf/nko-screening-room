@@ -183,10 +183,13 @@ io.sockets.on('connection', function (socket) {
                         request(options,function(error,response,body){
                             if (!error && response.statusCode == 200) {
                                 var video = body[0];
-                                console.log('****room',room);
-                                rooms[room].videos.push({url:url,from:nickname,title:video.title});
-                                socket.emit('update video queue',rooms[room].videos);
-                                socket.broadcast.to(room).emit('update video queue',rooms[room].videos);
+                                // console.log('****room',room);
+                                var video = {url:url,from:nickname,title:video.title};
+                                rooms[room].videos.push(video);
+                                socket.emit('add video',video);
+                                socket.broadcast.to(room).emit('add video',video);
+                                // socket.emit('update video queue',rooms[room].videos);
+                                // socket.broadcast.to(room).emit('update video queue',rooms[room].videos);
                             }
                         })
                     }
