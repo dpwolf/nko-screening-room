@@ -46,9 +46,25 @@
           });
       });
       
-      socket.on('new user',function(data){
-          console.warn('new user',data);
+      socket.on('list room members',function(members){
+          $('#users-in-room').empty();
+          $(members).each(function(i,member){
+              $('#users-in-room').append('<li>' + member + '</li>');
+          });
+      })
+      
+      socket.on('new room member',function(member){
+          $('#users-in-room').prepend('<li>' + member + '</li>');
       });
+
+      socket.on('nickname set',function(){
+          // alert('nickname set');
+      });
+
+      socket.on('room joined',function(){
+          // alert('room joined');
+      });
+
       
       socket.on('room_name', function (data) {
         console.log(data);
@@ -105,6 +121,8 @@
         </form>
     </div>
     <ul id="rooms">
+    </ul>
+    <ul id="users-in-room">
     </ul>
 </body>
 </html>

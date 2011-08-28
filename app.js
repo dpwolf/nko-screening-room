@@ -61,15 +61,22 @@ app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-var rooms = [];
+var rooms = {};
 
 io.sockets.on('connection', function (socket) {
-    socket.emit('list rooms',rooms)
+    var room_list = [];
+    for(room in rooms){
+        if(room){
+            room_list.push(room);
+        }
+    }
+    socket.emit('list rooms',room_list);
+    console.log(room_list);
 
     socket.on('set nickname', function (name) {
         socket.set('nickname', name, function () {
             console.log('***********nickname set:', name)
-            socket.emit('ready');
+            socket.emit('nickname set');
         });
     });
 
@@ -89,24 +96,33 @@ io.sockets.on('connection', function (socket) {
                 socket.set('room', room);
                 console.log('***********room:',room);
                 
-                var room_exists = false;
-                if(rooms.length){
-                    for(i=0;i<rooms.length;i++){
-                        if(rooms[i] == room){
-                            room_exists = true;
+                if(rooms){
+                    if(rooms[room]){
+                        for(j=0;j<rooms[room].length;j++){
+                            if(rooms[room][j] == nickname){
+                                user_already_in_room = true;
+                            }
                         }
+                        if(!user_already_in_room){
+                            rooms[room].push(nickname);
+                        }
+                    }else{
+                        rooms[room] = [nickname];
                     }
                 }
-                if(!room_exists){
-                    console.log('********* room not in list of existing rooms')
-                    rooms.push(room);
-                }else{
-                    console.log('********* room is in list of existing rooms')
+
+                socket.emit('room joined');
+                var room_list = [];
+                for(room in rooms){
+                    if(room){
+                        room_list.push(room);
+                    }
                 }
-                
-                socket.emit('list rooms',rooms);
-                socket.broadcast.emit('list rooms',rooms);
-                socket.broadcast.to(room).emit('new user', nickname);
+
+                socket.emit('list rooms',room_list);
+                socket.emit('list room members',rooms.room);
+                socket.broadcast.emit('list rooms',room_list);
+                socket.broadcast.to(room).emit('new room member', nickname);
             }
         })
     })
