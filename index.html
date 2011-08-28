@@ -200,6 +200,7 @@
 
       socket.on('nickname set',function(){
           $('#set-nickname').hide();
+          $('#add-room').show();
           // alert('nickname set');
       });
 
@@ -224,18 +225,18 @@
     <div id="embed"></div>
     <div>
         <form id="set-nickname" action="javascript: set_nickname()" style="display:inherit">
-            <input type="text" name="username" value="" placeholder="username" id="username" >
-            <input type="submit" value="Set username">
+            <input class="enter" type="text" name="username" value="" placeholder="Set Your Username!" id="username" >
+            <input class="submit" type="submit" value="Set username">
         </form>
 
         <form id="add-room" action="javascript: join_room()" style="display:none">
-            <input type="text" name="username" value="" placeholder="room" id="room" >
-            <input type="submit" value="Join room">
+            <input class="enter" type="text" name="username" value="" placeholder="Create or Enter a Room" id="room" >
+            <input class="submit" type="submit" value="Join room">
         </form>
 
         <form action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)" style="display:none">
-            <input type="text" name="new_video" value="" placeholder="paste your url here" id="new_video_url" >
-            <input type="submit" value="Add video &rarr;">
+            <input class="enter" type="text" name="new_video" value="" placeholder="Paste Your Video URL Here" id="new_video_url" >
+            <input class="submit" type="submit" value="Add video &rarr;">
         </form>
     </div>
 

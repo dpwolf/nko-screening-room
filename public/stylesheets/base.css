@@ -35,7 +35,7 @@ body {
   padding:5px;
 }
 
-.form {
+form,.form {
     width: 550px;
     height: 100px;
     position: absolute;
