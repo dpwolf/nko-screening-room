@@ -98,6 +98,7 @@ io.sockets.on('connection', function (socket) {
                 
                 if(rooms){
                     if(rooms[room]){
+                        var user_already_in_room = false;
                         for(j=0;j<rooms[room].length;j++){
                             if(rooms[room][j] == nickname){
                                 user_already_in_room = true;
@@ -113,15 +114,16 @@ io.sockets.on('connection', function (socket) {
 
                 socket.emit('room joined');
                 var room_list = [];
-                for(room in rooms){
-                    if(room){
-                        room_list.push(room);
+                for(rm in rooms){
+                    if(rm){
+                        room_list.push(rm);
                     }
                 }
 
                 socket.emit('list rooms',room_list);
                 socket.emit('list room members',rooms.room);
                 socket.broadcast.emit('list rooms',room_list);
+                socket.emit('new room member', nickname);
                 socket.broadcast.to(room).emit('new room member', nickname);
             }
         })
