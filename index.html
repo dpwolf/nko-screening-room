@@ -8,6 +8,18 @@
     <script src="/js/froogaloop2.min.js"></script>
     <script>
 
+    $(document).ready(function(){
+        $('.x-join-room').live('click',function(){
+            if(nickname){
+                var room = this.data('room');
+                join_room(room);
+            }else{
+                alert('Please choose a nickname before you join a room');
+            }
+        })
+    })
+
+
     var username_is_set = false,
         nickname = false,
         video_queue = [],
@@ -62,8 +74,8 @@
         }
     }
 
-    function join_room(){
-        var room = document.getElementById('room').value;
+    function join_room(room){
+        var room = room || document.getElementById('room').value;
         if(room){
             socket.emit('join room',room)
             console.log('join room',room)
@@ -78,26 +90,6 @@
     function add_video(url){
         socket.emit('add video', url);
     }
-
-    // function check_for_duplicate_videos(video){
-    //     if(video_queue.length){
-    //         var is_duplicate = false;
-    //         for(i in old_video_queue){
-    //             if(video.url = old_video_queue[i].url){
-    //                 is_duplicate = true;
-    //             }
-    //         }
-    //         if(is_duplicate){
-    //             return false
-    //             video_queue.shift();
-    //             check_for_duplicate_videos();
-    //         }else{
-    //             return video_queue.shift();
-    //         }
-    //     }else{
-    //         return false;
-    //     }
-    // }
 
     function play_next_video(){
         if(current_video){
@@ -157,7 +149,7 @@
           console.log('rooms',rooms)
           $('#rooms').empty();
           $(rooms).each(function(i,room){
-              $('#rooms').append('<li>' + room.name + ' (<span>' + room.count + '</span>)</li>');
+              $('#rooms').append('<li class="x-join-room" data-room="' + room.name + '">' + room.name + ' (<span>' + room.count + '</span>)</li>');
           });
       });
 
@@ -179,6 +171,14 @@
           }
       });
 
+      socket.on('add video',function(video){
+          video_queue.push(video);
+          if(!current_video){
+              play_next_video();
+          }
+      });
+
+
       socket.on('new room member',function(member){
           if(member != nickname){
               $('#users-in-room').prepend('<li>' + member + '</li>');
@@ -189,6 +189,9 @@
           if(member == nickname){
               $('#users-in-room').empty();
               $('#current-room').empty();
+              $('#embed').empty();
+              current_video = false;
+              video_queue = [];
           }
           console.log('member left room',member);
       });
