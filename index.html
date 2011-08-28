@@ -6,6 +6,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery-1.6.2.min.js"></script>
     <script src="/js/froogaloop2.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/base.css" type="text/css" media=screen>
+    <link rel="stylesheet" href="/stylesheets/reset.css" type="text/css" media=screen>
     <script>
 
     $(document).ready(function(){
@@ -25,7 +27,7 @@
         video_queue = [],
         old_video_queue = [],
         current_video = null;
-        
+
     function addEvent(element, eventName, callback) {
         if (element.addEventListener) {
             element.addEventListener(eventName, callback, false);
@@ -141,7 +143,7 @@
 
 
     function show_upcoming_video(){
-        
+
     }
 
       socket = io.connect('/');
@@ -206,38 +208,44 @@
       });
 
       // socket.on('add video', function (video) {
-      // 
+      //
       // });
     </script>
 </head>
 <body>
+  <div class="wrapper">
 
   <h1>Video Projection</h1>
   <h2>Currently in room: <span id="current-room"></span></h2>
   <a onclick="leave_room();">Leave</a>
     <h3 id="from"></h3>
-    <div id="embed">Loading video...</div>
+    <div id="embed"></div>
     <div>
-        <form action="javascript: set_nickname()">
-            <input type="text" name="username" value="" placeholder="username" id="username" >
-            <input type="submit" value="Set username">
+        <form class="form"action="javascript: set_nickname()">
+            <input class="enter" type="text" name="username" value="" placeholder="Set Your Username!" id="username" >
+            <input class="submit" type="submit" value="Set username">
         </form>
 
-        <form action="javascript: join_room()">
-            <input type="text" name="username" value="" placeholder="room" id="room" >
-            <input type="submit" value="Join room">
+        <form class="form" action="javascript: join_room()">
+            <input class="enter" type="text" name="username" value="" placeholder="Create or Enter a Room" id="room" >
+            <input class="submit" type="submit" value="Join room">
         </form>
 
-        <form action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
-            <input type="text" name="new_video" value="" placeholder="paste your url here" id="new_video_url" >
-            <input type="submit" value="Add video &rarr;">
+        <form class="form" action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
+            <input class="enter" type="text" name="new_video" value="" placeholder="Paste Your Video URL Here" id="new_video_url" >
+            <input class="submit" type="submit" value="Add video &rarr;">
         </form>
     </div>
+
+  </div><!--wrapper-->
+
+  <div id="right_column">
     <h3>Available Rooms:</h3>
     <ul id="rooms">
     </ul>
     <h3>Room Members:</h3>
     <ul id="users-in-room">
     </ul>
+  </div>
 </body>
 </html>
