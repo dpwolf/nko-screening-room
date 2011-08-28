@@ -100,12 +100,12 @@ io.sockets.on('connection', function (socket) {
                 if(!room_exists){
                     console.log('********* room not in list of existing rooms')
                     rooms.push(room);
-                    socket.emit('list rooms',rooms)
                 }else{
                     console.log('********* room is in list of existing rooms')
                 }
                 
-                
+                socket.emit('list rooms',rooms);
+                socket.broadcast.emit('list rooms',rooms);
                 socket.broadcast.to(room).emit('new user', nickname);
             }
         })
