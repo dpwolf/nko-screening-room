@@ -20,7 +20,7 @@
             element.attachEvent(eventName, callback, false);
         }
     }
-    
+
     function setup_event_listners(){
         var froogaloop = $f(document.querySelectorAll('iframe')[0]);
         froogaloop.addEvent('finish',play_next_video);
@@ -29,16 +29,16 @@
     function ready() {
         setup_event_listners();
     }
-    
+
     function embedVideo(video) {
         document.getElementById('embed').innerHTML = unescape(video.html);
-        
+
         /**
          * Utility function for adding an event. Handles the inconsistencies
          * between the W3C method for adding events (addEventListener) and
          * IE's (attachEvent).
          */
-        
+
         // Listen for the ready event for any vimeo video players on the page
         var vimeoPlayers = document.querySelectorAll('iframe'),
             player;
@@ -192,8 +192,10 @@
             <input type="submit" value="Add video &rarr;">
         </form>
     </div>
+    <h3>Available Rooms:</h3>
     <ul id="rooms">
     </ul>
+    <h3>Room Members:</h3>
     <ul id="users-in-room">
     </ul>
 </body>
