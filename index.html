@@ -4,14 +4,31 @@
     <meta charset="utf-8">
     <title>Vimeo Javascript oEmbed Example</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/jquery-1.6.2.min.js"></script>
     <script>
     // This function puts the video on the page
+    var username_is_set = false;
     function embedVideo(video) {
         document.getElementById('embed').innerHTML = unescape(video.html);
     }
+    function next_video(url,username){
+        if(!username_is_set){
+            if(username){
+                socket.emit('set nickname',username)
+                username_is_set = true;
+                console.warn('emit','room_name', {current_video: url,nickname: username});
+                socket.emit('room_name', {current_video: url,nickname: username});
+            }else{
+                alert('Enter a username!');
+            }
+        }else{
+            console.warn('emit','room_name', {current_video: url,nickname: username});
+            socket.emit('room_name', {current_video: url,nickname: username});
+        }
+    }
     
     
-      var socket = io.connect('http://localhost');
+      socket = io.connect('/');
       socket.on('room_name', function (data) {
         console.log(data);
         // alert(data.current_video)
@@ -31,22 +48,32 @@
 
 
         // This function loads the data from Vimeo
-        function init() {
-            var js = document.createElement('script');
-            js.setAttribute('type', 'text/javascript');
-            js.setAttribute('src', url);
-            document.getElementsByTagName('head').item(0).appendChild(js);
+
+        document.getElementById('from').innerHTML = data.nickname;
+
+        if(embed = document.getElementById('vimeo_embed')){
+            document.getElementsByTagName('head').item(0).removeChild(embed);
         }
-        init()
-        
-        // socket.emit('my other event', { my: 'data' });
+        var js = document.createElement('script');
+        js.setAttribute('type', 'text/javascript');
+        js.setAttribute('src', url);
+        js.setAttribute('id','vimeo_embed');
+        document.getElementsByTagName('head').item(0).appendChild(js);
       });
     </script>
 </head>
 <body>
 
     <h1>Vimeo Javascript oEmbed Example</h1>
+    <h2 id="from"></h2>
     <div id="embed">Loading video...</div>
+    <div>
+        <form action="javascript: next_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
+            <input type="text" name="username" value="" placeholder="username" id="username" >
+            <input type="text" name="new_video" value="" placeholder="paste your url here" id="new_video_url" >
+            <input type="submit" value="Add video &rarr;">
+        </form>
+    </div>
 
 </body>
 </html>
