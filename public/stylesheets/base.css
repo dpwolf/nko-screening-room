@@ -36,11 +36,11 @@ body {
 }
 
 .form {
-  width:550px;
-  height:100px;
-  position:absolute;
-  top:340px;
-  left:155px;
+    width: 550px;
+    height: 100px;
+    position: absolute;
+    top: 12px;
+    left: 300px;
 }
 
 .submit {

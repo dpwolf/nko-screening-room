@@ -199,10 +199,12 @@
       });
 
       socket.on('nickname set',function(){
+          $('#set-nickname').hide();
           // alert('nickname set');
       });
 
       socket.on('room joined',function(room){
+         $('#add-room').hide();
          $('#current-room').text(room);
           // alert('room joined');
       });
@@ -221,19 +223,19 @@
     <h3 id="from"></h3>
     <div id="embed"></div>
     <div>
-        <form class="form"action="javascript: set_nickname()">
-            <input class="enter" type="text" name="username" value="" placeholder="Set Your Username!" id="username" >
-            <input class="submit" type="submit" value="Set username">
+        <form id="set-nickname" action="javascript: set_nickname()" style="display:inherit">
+            <input type="text" name="username" value="" placeholder="username" id="username" >
+            <input type="submit" value="Set username">
         </form>
 
-        <form class="form" action="javascript: join_room()">
-            <input class="enter" type="text" name="username" value="" placeholder="Create or Enter a Room" id="room" >
-            <input class="submit" type="submit" value="Join room">
+        <form id="add-room" action="javascript: join_room()" style="display:none">
+            <input type="text" name="username" value="" placeholder="room" id="room" >
+            <input type="submit" value="Join room">
         </form>
 
-        <form class="form" action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)">
-            <input class="enter" type="text" name="new_video" value="" placeholder="Paste Your Video URL Here" id="new_video_url" >
-            <input class="submit" type="submit" value="Add video &rarr;">
+        <form action="javascript: add_video(document.getElementById('new_video_url').value,document.getElementById('username').value)" style="display:none">
+            <input type="text" name="new_video" value="" placeholder="paste your url here" id="new_video_url" >
+            <input type="submit" value="Add video &rarr;">
         </form>
     </div>
 
