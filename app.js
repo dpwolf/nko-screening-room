@@ -63,6 +63,33 @@ app.get('/', function (req, res) {
 
 var rooms = {};
 
+function leave_room(){
+    socket.get('room',function(err,room){
+        if(err){
+            console.log(err);
+        }else{
+            socket.leave(room);
+            console.log('*********leave room: ',room);
+            socket.get('nickname',function(err, nickname){
+                if(err){
+                    console.log(err);
+                }else{
+                    for(var i in rooms[room]){
+                        if(rooms[room][i]==nickname){
+                            rooms[room].splice(i,1);
+                            break;
+                        }
+                    }
+                    socket.broadcast.to(room).emit('member left room',nickname);
+                    socket.emit('member left room',nickname);
+                }
+            });
+
+            socket.broadcast.to(room).emit('list room members',rooms[room]);
+        }
+    })
+}
+
 io.sockets.on('connection', function (socket) {
     var room_list = [];
     for(room in rooms){
@@ -102,6 +129,7 @@ io.sockets.on('connection', function (socket) {
                         for(j=0;j<rooms[room].length;j++){
                             if(rooms[room][j] == nickname){
                                 user_already_in_room = true;
+                                leave_room();
                             }
                         }
                         if(!user_already_in_room){
@@ -129,30 +157,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('leave room', function(){
-        socket.get('room',function(err,room){
-            if(err){
-                console.log(err);
-            }else{
-                socket.leave(room);
-                console.log('*********leave room: ',room);
-                socket.get('nickname',function(err, nickname){
-                    if(err){
-                        console.log(err);
-                    }else{
-                        for(var i in rooms[room]){
-                            if(rooms[room][i]==nickname){
-                                rooms[room].splice(i,1);
-                                break;
-                            }
-                        }
-                        socket.broadcast.to(room).emit('member left room',nickname);
-                        socket.emit('member left room',nickname);
-                    }
-                });
-
-                socket.broadcast.to(room).emit('list room members',rooms[room]);
-            }
-        })
+        leave_room();
     })
     
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
