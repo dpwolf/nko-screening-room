@@ -9,7 +9,8 @@
     <script>
 
     var username_is_set = false,
-        nickname = false;
+        nickname = false,
+        video_queue = [];
         
     function addEvent(element, eventName, callback) {
         if (element.addEventListener) {
@@ -20,13 +21,9 @@
         }
     }
     
-    function end_video(){
-        alert('end video');
-    }
-
     function setup_event_listners(){
         var froogaloop = $f(document.querySelectorAll('iframe')[0]);
-        froogaloop.addEvent('finish',end_video);
+        froogaloop.addEvent('finish',play_next_video);
     }
 
     function ready() {
@@ -79,7 +76,43 @@
     function add_video(url){
         socket.emit('add video', url);
     }
+    
+    function play_next_video(){
+        if(video_queue){
+            var video = video_queue.shift();
+            console.log('play_video',video);
+            // alert(data.current_video)
 
+            // This is the URL of the video you want to load
+            var videoUrl = video.url;
+
+            // This is the oEmbed endpoint for Vimeo (we're using JSON)
+            // (Vimeo also supports oEmbed discovery. See the PHP example.)
+            var endpoint = 'http://www.vimeo.com/api/oembed.json';
+
+            // Tell Vimeo what function to call
+            var callback = 'embedVideo';
+
+            // Put together the URL
+            var url = endpoint + '?url=' + encodeURIComponent(videoUrl) + '&callback=' + callback + '&width=640&autoplay=true&api=true';
+
+
+            // This function loads the data from Vimeo
+
+            document.getElementById('from').innerHTML = 'This video is brought to you by ' + video.from;
+
+            if(embed = document.getElementById('vimeo_embed')){
+                document.getElementsByTagName('head').item(0).removeChild(embed);
+            }
+            var js = document.createElement('script');
+            js.setAttribute('type', 'text/javascript');
+            js.setAttribute('src', url);
+            js.setAttribute('id','vimeo_embed');
+            document.getElementsByTagName('head').item(0).appendChild(js);
+        }else{
+            alert('No more videos! Add one!');
+        }
+    }
 
       socket = io.connect('/');
       socket.on('list rooms',function(rooms){
@@ -97,6 +130,16 @@
               $('#users-in-room').append('<li>' + member + '</li>');
           });
       })
+
+      socket.on('update video queue',function(queue){
+          video_queue = queue;
+          console.log('video_queue',video_queue);
+          if($('iframe').length){
+              play_next_video();
+          }else{
+              play_next_video();
+          }
+      });
 
       socket.on('new room member',function(member){
           if(member != nickname){
@@ -121,37 +164,9 @@
           // alert('room joined');
       });
 
-      socket.on('add video', function (video) {
-        console.log('add video',video);
-        // alert(data.current_video)
-
-        // This is the URL of the video you want to load
-        var videoUrl = video.url;
-
-        // This is the oEmbed endpoint for Vimeo (we're using JSON)
-        // (Vimeo also supports oEmbed discovery. See the PHP example.)
-        var endpoint = 'http://www.vimeo.com/api/oembed.json';
-
-        // Tell Vimeo what function to call
-        var callback = 'embedVideo';
-
-        // Put together the URL
-        var url = endpoint + '?url=' + encodeURIComponent(videoUrl) + '&callback=' + callback + '&width=640&autoplay=true&api=true';
-
-
-        // This function loads the data from Vimeo
-
-        document.getElementById('from').innerHTML = 'This video is brought to you by ' + video.from;
-
-        if(embed = document.getElementById('vimeo_embed')){
-            document.getElementsByTagName('head').item(0).removeChild(embed);
-        }
-        var js = document.createElement('script');
-        js.setAttribute('type', 'text/javascript');
-        js.setAttribute('src', url);
-        js.setAttribute('id','vimeo_embed');
-        document.getElementsByTagName('head').item(0).appendChild(js);
-      });
+      // socket.on('add video', function (video) {
+      // 
+      // });
     </script>
 </head>
 <body>

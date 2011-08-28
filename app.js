@@ -47,8 +47,8 @@
 
 var express = require('express')
     ,app = express.createServer()
-  , io = require('socket.io').listen(app)
-  // ,nko = require('nko');
+    , io = require('socket.io').listen(app)
+    , nko = require('nko');
 
   app.configure(function(){
     app.use(express.static(__dirname + '/public'));
@@ -164,6 +164,12 @@ io.sockets.on('connection', function (socket) {
     
     // socket.send('room_name',{ current_video: 'http://vimeo.com/10866394' });
     socket.on('add video', function (url) {
+        
+        console.log('********* add video ',url)
+        var vid = url.replace('http://vimeo.com/','').replace('http://www.vimeo.com/','').replace('/','');
+        console.log('************** vid',vid);
+        var api_path = '/api/v2/video/' + vid + '.json';
+
         socket.get('nickname',function(err, nickname){
             if(err){
                 console.log(err);
@@ -172,8 +178,17 @@ io.sockets.on('connection', function (socket) {
                     if(err){
                         console.log(err);
                     }else{
-                        socket.emit('add video',{url:url,from:nickname});
-                        socket.broadcast.to(room).emit('add video',{url:url,from:nickname});
+                        var options = {url:'http://vimeo.com/' + api_path,json:true};
+                        var request = require('request');
+                        request(options,function(error,response,body){
+                            if (!error && response.statusCode == 200) {
+                                var video = body[0];
+                                console.log('****room',room);
+                                rooms[room].videos.push({url:url,from:nickname,title:video.title});
+                                socket.emit('update video queue',rooms[room].videos);
+                                socket.broadcast.to(room).emit('update video queue',rooms[room].videos);
+                            }
+                        })
                     }
                 })
             }
