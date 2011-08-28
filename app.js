@@ -82,9 +82,9 @@ function leave_room(socket){
                     socket.broadcast.to(room).emit('member left room',nickname);
                     socket.emit('member left room',nickname);
                 }
+                socket.broadcast.to(room).emit('list room members',rooms[room].members);
+                list_rooms(socket);
             });
-            socket.broadcast.to(room).emit('list room members',rooms[room].members);
-            list_rooms(socket);
         }
     })
 }
