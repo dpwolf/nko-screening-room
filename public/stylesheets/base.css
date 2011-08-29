@@ -119,8 +119,8 @@ cursor: pointer;
 }
 
 #rooms li{
-height: 50px;
-width: auto;
+height: 20px;
+width: 200px;
 text-align: center;
 padding: 4px 10px;
 font-size: 20px;
