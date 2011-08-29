@@ -13,7 +13,7 @@
     $(document).ready(function(){
         $('.x-join-room').live('click',function(){
             if(nickname){
-                var room = this.data('room');
+                var room = $(this).data('room');
                 join_room(room);
             }else{
                 alert('Please choose a nickname before you join a room');
