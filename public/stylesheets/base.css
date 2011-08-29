@@ -117,3 +117,22 @@ border-radius: 6px;
 cursor: pointer;
 
 }
+
+#rooms li{
+height: 50px;
+width: auto;
+text-align: center;
+padding: 4px 10px;
+font-size: 20px;
+line-height: 14px;
+font-weight: bold;
+color: #333;
+text-shadow: 0px 1px 1px white;
+background-color: #F2F262;
+background-repeat: repeat-x;
+border: 0;
+-webkit-border-radius: 6px;
+-moz-border-radius: 6px;
+border-radius: 6px;
+cursor: pointer;
+}
