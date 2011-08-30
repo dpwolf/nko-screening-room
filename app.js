@@ -115,6 +115,25 @@ io.sockets.on('connection', function (socket) {
             socket.emit('nickname set');
         });
     });
+    socket.on('chat',function(message){
+        socket.get('nickname', function(err, nickname){
+            if(err){
+                console.log('****** nickname error');
+                console.log(err);
+            }else{
+                socket.get('room', function(err, room){
+                    if(err){
+                        console.log('****** room error',err);
+                    }else{
+                        socket.emit('chat',{from:nickname,message:message});
+                        socket.broadcast.to(room).emit('chat', {from:nickname,message:message});
+                    }
+                });
+            }
+       });
+       
+       
+    });
 
     socket.on('join room', function(room){
         console.log('****** joining room');

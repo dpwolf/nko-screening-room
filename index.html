@@ -181,6 +181,10 @@
           }
       });
 
+      socket.on('chat', function(message){
+          
+          console.warn('chat message',message);
+      })
 
       socket.on('new room member',function(member){
           if(member != nickname){
@@ -260,6 +264,14 @@
     <ul id="users-in-room">
     </ul>
      <h3 id="from"></h3>
+    <div id="chat-pane">
+
+        <!-- <form id="chat-input" action="javascript: submit_chat()" style="display:inherit">
+                <input class="enter" type="text" name="username" value="" placeholder="chat" id="username" >
+                <input class="submit" type="submit" value="Set username">
+            </form>
+        </form> -->
+    </div>
   </div>
 </body>
 </html>
